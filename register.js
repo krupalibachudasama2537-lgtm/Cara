@@ -16,8 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const password = document.getElementById("registerPassword")?.value.trim();
         const confirmPassword = document.getElementById("confirmPassword")?.value.trim();
 
-        const role = document.querySelector('input[name="registerRole"]:checked')?.value || "USER";
-
         const messageBox = document.getElementById("formMessage");
 
         // basic validation
@@ -27,6 +25,11 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        if (password.length < 8) {
+            messageBox.innerText = "Password must be at least 8 characters long!";
+            messageBox.style.color = "red";
+            return;
+        }
         if (password !== confirmPassword) {
             messageBox.innerText = "Passwords do not match!";
             messageBox.style.color = "red";
@@ -34,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const res = await fetch("http://localhost:8000/api/auth/register", {
+            const res = await fetch("/api/auth/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -42,8 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify({
                     username,
                     email,
-                    password,
-                    role
+                    password
                 })
             });
 
@@ -72,3 +74,4 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+// TODO: Prevent signup triggers if password complexity score is poor

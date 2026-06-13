@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from enum import Enum
 
@@ -22,15 +22,22 @@ class Product(ProductBase):
     class Config:
         from_attributes = True
 
+class InteractionType(str, Enum):
+    view     = "view"
+    click    = "click"
+    wishlist = "wishlist"
+    cart     = "cart"
+    buy      = "buy"
+
 class InteractionCreate(BaseModel):
     user_id: str
     product_id: int
-    interaction_type: str
+    interaction_type: InteractionType
 
 class RecommendationRequest(BaseModel):
     product_id: int
     user_id: Optional[str] = None
-    limit: Optional[int] = 4
+    limit: int = Field(default=4, ge=1, le=50)
 
 
 # -- Role --
@@ -44,7 +51,6 @@ class UserRegister(BaseModel):
     username: str
     email:    EmailStr
     password: str
-    role:     RoleEnum = RoleEnum.USER
 
 
 class UserLogin(BaseModel):
